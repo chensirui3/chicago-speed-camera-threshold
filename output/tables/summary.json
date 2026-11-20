@@ -18,8 +18,10 @@
   "pretrend_p_values": {
     "main": 0.1142590014560528,
     "injury": 0.19841947447460972,
+    "pedbike": 0.00423567016357617,
     "redlight": 0.8110587766350883,
     "redlight_injury": 0.7795911049282654,
+    "redlight_pedbike": 0.19918230944139023,
     "all_pre2018": 0.05277529907626121,
     "school": 0.010498907581372906
   },
@@ -38,6 +40,81 @@
     }
   ],
   "raw_ratio_of_ratios_pct": 3.0257398484340614,
+  "dose_response_slopes": [
+    {
+      "period": "actual",
+      "outcome": "crashes_r201",
+      "per_doubling_pct": -10.709000932947351,
+      "ci_low": -18.48604122687751,
+      "ci_high": -2.1899729274185713,
+      "p_value": 0.0148397486319076,
+      "p_permutation": 0.028971028971028972,
+      "p_equal_thirds": 0.555867390972707,
+      "effect_at_mean_jump_pct": 5.27220243960389
+    },
+    {
+      "period": "actual",
+      "outcome": "injury_r201",
+      "per_doubling_pct": -27.669868891594383,
+      "ci_low": -41.67341696664067,
+      "ci_high": -10.304228465313075,
+      "p_value": 0.0031723782109736955,
+      "p_permutation": 0.011988011988011988,
+      "p_equal_thirds": 0.3179386828418434,
+      "effect_at_mean_jump_pct": -8.341248531560057
+    },
+    {
+      "period": "placebo",
+      "outcome": "crashes_r201",
+      "per_doubling_pct": -1.2580244155554277,
+      "ci_low": -10.433795128444826,
+      "ci_high": 8.857774607077143,
+      "p_value": 0.7991744288492135,
+      "p_permutation": 0.8141858141858141,
+      "p_equal_thirds": 0.8375134421965936,
+      "effect_at_mean_jump_pct": -3.416529463425456
+    },
+    {
+      "period": "placebo",
+      "outcome": "injury_r201",
+      "per_doubling_pct": 6.064812211665521,
+      "ci_low": -23.57320431959368,
+      "ci_high": 47.196337218413426,
+      "p_value": 0.7247267477024953,
+      "p_permutation": 0.7342657342657343,
+      "p_equal_thirds": 0.785941343075507,
+      "effect_at_mean_jump_pct": 7.851757282557584
+    }
+  ],
+  "permutation": [
+    {
+      "spec": "All crashes (main)",
+      "outcome": "crashes_r201",
+      "pct_change": 3.3184680122032337,
+      "p_permutation": 0.4945054945054945,
+      "p_clustered": 0.4628278551643217,
+      "permutations": 1000,
+      "share_below": 0.755
+    },
+    {
+      "spec": "Injury crashes",
+      "outcome": "injury_r201",
+      "pct_change": -11.906247516835755,
+      "p_permutation": 0.18581418581418582,
+      "p_clustered": 0.18567631131003026,
+      "permutations": 1000,
+      "share_below": 0.09
+    },
+    {
+      "spec": "Pedestrian or cyclist crashes",
+      "outcome": "pedbike_r201",
+      "pct_change": -27.806633875873597,
+      "p_permutation": 0.06493506493506493,
+      "p_clustered": 0.05810261884450991,
+      "permutations": 1000,
+      "share_below": 0.031
+    }
+  ],
   "main_spec": {
     "name": "All crashes (main)",
     "outcome": "crashes",

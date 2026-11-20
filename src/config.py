@@ -59,6 +59,16 @@ MAIN_WINDOW = ("2018-01", "2022-12")      # every comparison site is camera-free
 EXTENDED_WINDOW = ("2018-01", "2024-12")  # comparison sites drop out as their cameras go live
 REFERENCE_QUARTER = "2020Q4"  # omitted event-study quarter; plots re-center on the pre mean
 
+# --- Extra checks ----------------------------------------------------------------------
+# Dose-response: how hard the new threshold bit at a site, measured as the jump in its
+# monthly violations from 2019 to the first three months of $35 tickets (before drivers
+# had much time to adapt).
+DOSE_BEFORE = ("2019-01", "2019-12")
+DOSE_AFTER = ("2021-03", "2021-05")
+# Permutation test: reshuffle which sites count as treated this many times.
+PERMUTATIONS = 1000
+PERMUTATION_SEED = 20210301
+
 # Crash causes treated as "speed-related" (primary or secondary cause)
 SPEED_CAUSES = {
     "EXCEEDING AUTHORIZED SPEED LIMIT",
