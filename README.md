@@ -6,6 +6,8 @@ This project asks whether crashes near those cameras fell, compared with similar
 
 **Short answer: no detectable reduction in total crashes, but signs that injury crashes fell where the new threshold bit hardest.** Compared with sites that got cameras only later, total crashes within 1/8 mile of the affected cameras changed by **+3% (95% CI −5% to +13%)**, which rules out a drop larger than about 5%. Injury crashes fell **12%** on average, but that interval (−27% to +6%) includes zero. At the third of sites where violations jumped the most, though, injury crashes fell **20% (95% CI −34% to −4%)**, and no such pattern existed before 2021. Pedestrian and cyclist crashes point the same way (−17% to −28% across designs) but are too noisy to confirm. Fatal and serious-injury crashes are too rare at this scale to evaluate.
 
+**[Try the interactive demo →](https://chensirui3.github.io/chicago-speed-camera-threshold/)** Switch between 72 versions of the model (outcome, comparison group, radius, years, COVID months), or click any of the 283 sites on a map to see its crashes and violations over time.
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="output/figures/event_study-dark.png">
   <img alt="Event study. Quarterly difference in crashes between 51 park-zone camera sites and 56 future camera sites, relative to the 2018–2020 average. Before and after the March 2021 threshold change, quarterly estimates scatter around zero. Pooled after-period estimate: +3% for all crashes (95% CI −5% to +13%) and −12% for injury crashes (95% CI −27% to +6%)." src="output/figures/event_study.png">
@@ -131,7 +133,15 @@ CDOT's own evaluations compare periods years apart around installation; one foun
 
 ## Reproduce
 
-Built with Python 3.14. The first run downloads about 880,000 crash records (about 130 MB, a few minutes), which are cached after that. The analysis itself then takes about two minutes, mostly for the permutation tests.
+Built with Python 3.14. The first run downloads about 880,000 crash records (about 130 MB, a few minutes), which are cached after that. The rest takes about ten minutes: two for the analysis and figures, and seven to precompute the 72 versions of the model behind the demo.
+
+To preview the demo locally, serve the `docs/` folder (it loads its data with `fetch`, so opening the file directly won't work):
+
+```powershell
+python -m http.server 8000 --directory docs
+```
+
+Then open http://localhost:8000.
 
 ```powershell
 python -m venv .venv
@@ -148,6 +158,8 @@ src/sites.py      step 2: camera universe incl. retired cameras, sites, study gr
 src/panel.py      step 3: crashes per site per month at three radii; violations per month
 src/estimate.py   step 4: Poisson DiD, event studies, dose-response, permutation tests
 src/figures.py    step 5: figures, light and dark
+src/demo.py       step 6: precompute every model and site series for the demo page
+docs/             the interactive demo (static HTML/JS, served by GitHub Pages)
 data/processed/   derived site list, camera list, panel (small; committed)
 output/           result tables (CSV/JSON) and figures
 ```

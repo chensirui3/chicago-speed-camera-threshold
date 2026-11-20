@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Speed Camera Explorer</title>
+  <meta name="description" content="Interactive results: did Chicago's 2021 drop to a 6 mph speed-camera threshold reduce crashes? Pick any version of the model or click a site on the map.">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <header class="wrap masthead">
+    <p class="eyebrow">Chicago &middot; speed cameras &middot; 2018&ndash;2025</p>
+    <h1>Did lowering the speed-camera threshold to 6&nbsp;mph reduce crashes?</h1>
+    <p class="lede">On March 1, 2021, Chicago's cameras began ticketing drivers going 6&nbsp;mph over the limit instead of about 10. Violations at the same cameras jumped almost fivefold. Pick any version of the model below, or click a site on the map, and check the answer yourself.</p>
+    <p class="links"><a href="https://github.com/chensirui3/chicago-speed-camera-threshold">Full write-up and code on GitHub &rarr;</a></p>
+  </header>
+
+  <main class="wrap">
+    <section aria-labelledby="estimate-heading">
+      <h2 id="estimate-heading">The estimate</h2>
+      <form id="controls" class="controls" aria-label="Model options"></form>
+
+      <div class="result" aria-live="polite">
+        <div class="hero" id="hero">&nbsp;</div>
+        <p class="ci" id="ci"></p>
+        <p class="verdict" id="verdict"></p>
+        <p class="caution" id="caution" hidden></p>
+      </div>
+
+      <figure class="card">
+        <figcaption>
+          <span class="fig-title">Quarter by quarter</span>
+          <span class="fig-sub">Gap between camera sites and comparison sites in each quarter, minus the average 2018&ndash;2020 gap. Dots show 95% confidence intervals; the blue band is the pooled estimate after March 2021.</span>
+        </figcaption>
+        <div id="es-chart" class="chart" role="img" aria-label="Event-study chart of the selected model"></div>
+        <details>
+          <summary>Show the numbers</summary>
+          <div class="table-scroll"><table id="es-table"></table></div>
+        </details>
+      </figure>
+      <p class="fine">Each combination of options is one of 72 versions of the model, fit in advance. With that many versions, a few will cross p&nbsp;&lt;&nbsp;0.05 by chance; the write-up treats total crashes as the primary outcome.</p>
+    </section>
+
+    <section aria-labelledby="sites-heading">
+      <h2 id="sites-heading">The sites</h2>
+      <p class="section-lede">Each dot is a speed-camera site or a red-light intersection, drawn over a map of where Chicago's crashes happen. Click one to see its crashes over time.</p>
+      <div class="map-layout">
+        <figure class="card map-card">
+          <div id="map" class="map"></div>
+          <ul class="legend" id="map-legend"></ul>
+        </figure>
+        <aside class="card site-card" aria-live="polite">
+          <label for="site-select" class="select-label">Or pick a site</label>
+          <select id="site-select"></select>
+          <h3 id="site-title"></h3>
+          <p id="site-meta" class="site-meta"></p>
+          <p id="site-stat" class="site-stat"></p>
+          <div class="mini-title" id="site-chart-title"></div>
+          <div id="site-chart" class="chart" role="img"></div>
+          <div id="vio-block">
+            <div class="mini-title">Speed-camera violations per month</div>
+            <div id="vio-chart" class="chart" role="img"></div>
+          </div>
+          <details>
+            <summary>Show the numbers</summary>
+            <div class="table-scroll"><table id="site-table"></table></div>
+          </details>
+        </aside>
+      </div>
+    </section>
+
+    <section class="notes" aria-labelledby="notes-heading">
+      <h2 id="notes-heading">How to read this</h2>
+      <ul>
+        <li><strong>Treated sites</strong> are 51 park-zone camera sites that ran continuously from before 2018. School-zone cameras went dark during remote learning and came back in early 2021, so they can't be separated from the threshold change and are left out.</li>
+        <li><strong>Future camera sites</strong> are places the city later chose for cameras (live 2023&ndash;2026), with no camera within 500&nbsp;m during 2018&ndash;2022. <strong>Red-light intersections</strong> are a second, independent comparison group.</li>
+        <li><strong>The model</strong> is a Poisson regression of monthly crash counts with site and month fixed effects and standard errors clustered by site. Crashes are counted within the radius you pick. January and February 2021, the warning period, are left out.</li>
+        <li><strong>Site charts</strong> show raw counts within 1/8 mile, not model output. Each site's own numbers are noisy; the estimate above pools all of them.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="wrap footer">
+    <p>Data: City of Chicago Data Portal (traffic crashes, speed camera locations and violations, red-light camera locations), downloaded November 2026. Code: <a href="https://github.com/chensirui3/chicago-speed-camera-threshold">github.com/chensirui3/chicago-speed-camera-threshold</a>, MIT License.</p>
+  </footer>
+
+  <div class="tooltip" id="tooltip" role="tooltip" hidden></div>
+</body>
+</html>
