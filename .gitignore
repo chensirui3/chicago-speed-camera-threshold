@@ -1,0 +1,5 @@
+.venv/
+__pycache__/
+*.pyc
+# Raw downloads (~130 MB) are rebuilt by `python run_all.py`.
+data/raw/

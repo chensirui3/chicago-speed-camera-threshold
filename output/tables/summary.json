@@ -1,0 +1,60 @@
+{
+  "main": {
+    "block": "Main",
+    "spec": "All crashes (main)",
+    "pct_change": 3.318468026922165,
+    "ci_low": -5.304620462870373,
+    "ci_high": 12.726786540251778,
+    "p_value": 0.4628278551643217,
+    "coef": 0.03264595467048545,
+    "se": 0.044464761318089296,
+    "treated_sites": 51,
+    "comparison_sites": 56,
+    "site_months": 6196,
+    "events": 17395,
+    "outcome": "crashes_r201",
+    "comparison": "control"
+  },
+  "pretrend_p_values": {
+    "main": 0.1142590014560528,
+    "injury": 0.19841947447460972,
+    "redlight": 0.8110587766350883,
+    "redlight_injury": 0.7795911049282654,
+    "all_pre2018": 0.05277529907626121,
+    "school": 0.010498907581372906
+  },
+  "raw_two_by_two": [
+    {
+      "arm": "comparison",
+      "before": 2.9751984126984126,
+      "after": 2.8384740259740258,
+      "change_pct": -4.595471217678626
+    },
+    {
+      "arm": "treated",
+      "before": 2.6971677559912854,
+      "after": 2.6510791366906474,
+      "change_pct": -1.708778373101194
+    }
+  ],
+  "raw_ratio_of_ratios_pct": 3.0257398484340614,
+  "main_spec": {
+    "name": "All crashes (main)",
+    "outcome": "crashes",
+    "radius": 201,
+    "treated_groups": [
+      "treated"
+    ],
+    "comparison": "control",
+    "comparison_zones": [],
+    "window": [
+      "2018-01",
+      "2022-12"
+    ],
+    "policy": "2021-03",
+    "drop": [],
+    "min_dist": 0,
+    "drop_transition": true,
+    "block": "Main"
+  }
+}
