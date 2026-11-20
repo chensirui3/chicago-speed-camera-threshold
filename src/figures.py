@@ -24,11 +24,11 @@ from geo import to_meters  # noqa: E402
 MINUS = "−"
 THEMES = [
     SimpleNamespace(suffix="", surface="#fcfcfb", ink="#0b0b0b", ink2="#52514e",
-                    muted="#898781", grid="#e1e0d9", axis="#c3c2b7",
+                    muted="#898781", grid="#e1e0d9", axis="#c3c2b7", neutral="#c9c8c1",
                     band=(0.043, 0.043, 0.043, 0.05),
                     blue="#2a78d6", orange="#eb6834", aqua="#1baf7a"),
     SimpleNamespace(suffix="-dark", surface="#1a1a19", ink="#f0efec", ink2="#c3c2b7",
-                    muted="#898781", grid="#2c2c2a", axis="#383835",
+                    muted="#898781", grid="#2c2c2a", axis="#383835", neutral="#55544f",
                     band=(0.941, 0.937, 0.925, 0.06),
                     blue="#3987e5", orange="#d95926", aqua="#199e70"),
 ]
@@ -271,17 +271,104 @@ def forest(t, results):
         ax.text(-0.005, yy, b.upper(), transform=ax.get_yaxis_transform(), ha="right",
                 va="center", fontsize=8.5, color=t.muted, fontweight="semibold")
     ax.set_ylim(y - 0.2, -0.8)
-    ax.set_xlim(-45, 50)
+    ax.set_xlim(-55, 50)
     ax.xaxis.set_major_locator(mticker.MultipleLocator(10))
     ax.xaxis.set_major_formatter(mticker.FuncFormatter(signed_pct))
     ax.tick_params(axis="x", labelsize=9)
 
-    heading(fig, t, "No specification finds a statistically significant change",
+    heading(fig, t, "No total-crash estimate differs from zero; injury and pedestrian "
+                    "estimates lean negative",
             "% change in crashes at camera sites relative to comparison sites after Mar 2021, "
             "with 95% confidence intervals.", x=0.02)
     footer(fig, t, "Main analysis in blue. \"Crashes coded as speeding\" (96 events) is "
                    "omitted: its interval spans −46% to +87%.", x=0.02)
     save(fig, "robustness", t)
+
+
+def dose_response(t):
+    rows = pd.read_csv(TABLES / "dose_response.csv")
+    slopes = pd.read_csv(TABLES / "dose_response_slope.csv")
+    panels = [("All crashes", "crashes_r201"), ("Injury crashes", "injury_r201")]
+    labels = ["Smallest jump", "Middle", "Largest jump"]
+
+    fig, axes = plt.subplots(1, 2, figsize=(9, 4.6), sharey=True)
+    fig.patch.set_facecolor(t.surface)
+    fig.subplots_adjust(left=0.15, right=0.97, top=0.66, bottom=0.2, wspace=0.12)
+    for ax, (title, outcome) in zip(axes, panels):
+        style(ax, t, grid="x")
+        ax.axvline(0, color=t.axis, lw=1, zorder=1)
+        for period, dy, face, color, lw in [("actual", -0.13, t.blue, t.blue, 1.6),
+                                             ("placebo", 0.13, t.surface, t.muted, 1.2)]:
+            r = rows[(rows["outcome"] == outcome) & (rows["period"] == period)]
+            yy = r["third"].to_numpy() - 1 + dy
+            ax.hlines(yy, r["ci_low"], r["ci_high"], color=color, lw=lw, zorder=2)
+            ax.plot(r["pct_change"], yy, "o", ms=7, mfc=face, mec=color if period == "placebo"
+                    else t.surface, mew=1.4, zorder=3)
+        s = slopes[(slopes["outcome"] == outcome) & (slopes["period"] == "actual")].iloc[0]
+        ax.set_title(title, loc="left", fontsize=11.5, fontweight="semibold", color=t.ink, pad=8)
+        ax.text(0, -0.13, f"Slope: {signed_pct(s['per_doubling_pct'])} per doubling of the jump "
+                          f"(p = {s['p_value']:.3f})", transform=ax.transAxes, fontsize=9,
+                color=t.ink2, va="top")
+        ax.xaxis.set_major_locator(mticker.MultipleLocator(20))
+        ax.xaxis.set_major_formatter(mticker.FuncFormatter(signed_pct))
+        ax.set_xlim(-45, 65)
+    axes[0].set_yticks([0, 1, 2], labels)
+    axes[0].set_ylim(2.55, -0.55)
+    handles = [plt.Line2D([], [], marker="o", ms=7, mfc=t.blue, mec=t.surface, color=t.blue,
+                          lw=1.6, label="After the Mar 2021 change"),
+               plt.Line2D([], [], marker="o", ms=7, mfc=t.surface, mec=t.muted, color=t.muted,
+                          lw=1.2, label="Placebo: fake Mar 2019 change")]
+    fig.legend(handles=handles, loc="upper left", bbox_to_anchor=(0.15, 0.785), ncol=2,
+               frameon=False, fontsize=9.5, labelcolor=t.ink2, handlelength=1.8)
+
+    jumps = rows[(rows["outcome"] == "crashes_r201") & (rows["period"] == "actual")]
+    ranges = ", ".join(f"{a:.1f}–{b:.1f}x" for a, b in zip(jumps["jump_min"], jumps["jump_max"]))
+    heading(fig, t, "Injury crashes fell most where the new threshold bit hardest",
+            "% change at camera sites vs. comparison sites, for thirds of the 51 sites by how much "
+            "violations jumped\nfrom 2019 to Mar–May 2021. The placebo runs the same test on "
+            "2018–2020, before any change.")
+    footer(fig, t, f"Violation jumps by third: {ranges}. 95% confidence intervals. "
+                   + SOURCE.replace(" (traffic crashes, speed camera locations and violations)", ""))
+    save(fig, "dose_response", t)
+
+
+def permutation(t):
+    perm = pd.read_csv(TABLES / "permutation.csv").set_index("outcome")
+    draws = pd.read_csv(TABLES / "permutation_draws.csv")
+    panels = [("All crashes", "crashes_r201"), ("Injury crashes", "injury_r201"),
+              ("Pedestrian or cyclist", "pedbike_r201")]
+
+    fig, axes = plt.subplots(1, 3, figsize=(9, 3.9))
+    fig.patch.set_facecolor(t.surface)
+    fig.subplots_adjust(left=0.04, right=0.98, top=0.66, bottom=0.17, wspace=0.12)
+    for ax, (title, outcome) in zip(axes, panels):
+        style(ax, t, grid=None)
+        d = draws[outcome]
+        obs = perm.loc[outcome, "pct_change"]
+        lo, hi = min(d.min(), obs), max(d.max(), obs)
+        bins = np.linspace(lo - 0.02 * (hi - lo), hi + 0.02 * (hi - lo), 31)
+        ax.hist(d, bins=bins, color=t.neutral, rwidth=0.82, zorder=1)
+        ax.axvline(obs, color=t.blue, lw=2, zorder=3)
+        top = ax.get_ylim()[1] * 1.28
+        ax.set_ylim(0, top)
+        right = obs < (lo + hi) / 2
+        ax.text(obs + (0.03 if right else -0.03) * (hi - lo), top * 0.97,
+                f"Actual: {signed_pct(obs)}\np = {perm.loc[outcome, 'p_permutation']:.2f}",
+                ha="left" if right else "right", va="top", fontsize=9.5, color=t.ink,
+                linespacing=1.35)
+        ax.set_yticks([])
+        ax.xaxis.set_major_locator(mticker.MaxNLocator(4))
+        ax.xaxis.set_major_formatter(mticker.FuncFormatter(signed_pct))
+        ax.set_title(title, loc="left", fontsize=11, fontweight="semibold", color=t.ink, pad=6)
+
+    heading(fig, t, "Against 1,000 random reassignments, no estimate stands out at p < 0.05",
+            "Gray: estimates after randomly reshuffling which 51 of the 107 sites count as "
+            "treated. Blue: the real estimate.\nThe p-value is the share of shuffles at least as "
+            "far from zero.", x=0.04)
+    footer(fig, t, "Same Poisson model with site and month fixed effects. "
+                   + SOURCE.replace(" (traffic crashes, speed camera locations and violations)", ""),
+           x=0.04)
+    save(fig, "permutation", t)
 
 
 def site_map(t, sites):
@@ -346,6 +433,8 @@ def main() -> None:
         violations(t, sites)
         raw_trends(t, panel)
         forest(t, results)
+        dose_response(t)
+        permutation(t)
         site_map(t, sites)
     print("figures ->", FIGURES)
     print(json.dumps(sorted(p.name for p in FIGURES.glob("*.png")), indent=1))

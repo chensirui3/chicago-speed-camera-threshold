@@ -13,7 +13,7 @@ from config import (CRASH_END, CRASH_START, PROCESSED, RADIUS_M, RAW, ROBUST_RAD
 from geo import to_meters
 
 RADII = sorted({RADIUS_M, *ROBUST_RADII_M})
-OUTCOMES = ["crashes", "injury", "ksi", "speed"]
+OUTCOMES = ["crashes", "injury", "ksi", "speed", "pedbike"]
 # Generous box around Chicago; drops records geocoded to (0, 0) or outside the city.
 LAT, LON = (41.60, 42.05), (-87.95, -87.50)
 
@@ -34,6 +34,9 @@ def load_crashes() -> pd.DataFrame:
                  | (df["injuries_incapacitating"].fillna(0) > 0)).astype(int)
     causes = df[["prim_contributory_cause", "sec_contributory_cause"]]
     df["speed"] = causes.isin(SPEED_CAUSES).any(axis=1).astype(int)
+    # Crashes whose first collision was with a pedestrian or a cyclist. (The crash-people
+    # table would also catch ones where that came later in the sequence.)
+    df["pedbike"] = df["first_crash_type"].isin(["PEDESTRIAN", "PEDALCYCLIST"]).astype(int)
     return df
 
 

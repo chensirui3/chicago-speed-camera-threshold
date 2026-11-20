@@ -4,7 +4,7 @@ On March 1, 2021, Chicago's speed cameras began ticketing drivers going 6 mph ov
 
 This project asks whether crashes near those cameras fell, compared with similar places that had no camera.
 
-**Short answer: no detectable reduction.** Compared with sites that got cameras only later, total crashes within 1/8 mile of the affected cameras changed by **+3% (95% CI −5% to +13%)**. That rules out a drop larger than about 5%. Injury crashes fell **12%** relative to comparison sites, but that interval (−27% to +6%) includes zero, and the estimate shrinks to −5% when March–December 2020 is excluded. Fatal and serious-injury crashes are too rare at this scale to evaluate.
+**Short answer: no detectable reduction in total crashes, but signs that injury crashes fell where the new threshold bit hardest.** Compared with sites that got cameras only later, total crashes within 1/8 mile of the affected cameras changed by **+3% (95% CI −5% to +13%)**, which rules out a drop larger than about 5%. Injury crashes fell **12%** on average, but that interval (−27% to +6%) includes zero. At the third of sites where violations jumped the most, though, injury crashes fell **20% (95% CI −34% to −4%)**, and no such pattern existed before 2021. Pedestrian and cyclist crashes point the same way (−17% to −28% across designs) but are too noisy to confirm. Fatal and serious-injury crashes are too rare at this scale to evaluate.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="output/figures/event_study-dark.png">
@@ -14,13 +14,22 @@ This project asks whether crashes near those cameras fell, compared with similar
 ## Findings
 
 1. **The policy changed enforcement a lot.** At the 51 study sites (65 cameras), violations went from about 43,000 a month in 2019 to 211,000 in March 2021. By 2025 they had fallen to 73,000 a month. That decline fits drivers slowing down near cameras, though less traffic or camera downtime could also contribute.
-2. **Total crashes didn't fall relative to comparison sites:** +3.3% (95% CI −5.3% to +12.7%). Eight alternative designs give estimates from −0.1% to +6.8%, and none is statistically significant. A fake policy date of March 2019 finds nothing (−3.6%), as it should.
-3. **Injury crashes:** −11.9% (95% CI −27.0% to +6.3%). All five injury specifications are negative (−5% to −12.5%), but none is significant at the 5% level, and the estimate is weakest when COVID months are dropped. This is suggestive, not conclusive.
-4. **Fatal or serious-injury crashes:** −6.5% (95% CI −39% to +43%). With 311 such crashes in the sample, there isn't enough data to say anything.
+2. **Total crashes didn't fall relative to comparison sites:** +3.3% (95% CI −5.3% to +12.7%). Eight alternative designs give estimates from −0.1% to +6.8%, and none is statistically significant. A fake policy date of March 2019 finds nothing (−3.6%), as it should. Reshuffling which sites count as treated 1,000 times gives a permutation p-value of 0.49.
+3. **Injury crashes, on average:** −11.9% (95% CI −27.0% to +6.3%; permutation p = 0.19). All five injury specifications are negative (−5% to −12.5%), but none is significant at the 5% level, and the estimate is weakest when COVID months are dropped.
+4. **Injury crashes fell most where the threshold bit hardest.** I split the 51 sites into thirds by how much their violations jumped (2.3–5.4x, 5.5–7.2x, 7.4–13.9x). For the three thirds, injury crashes changed by +3%, −16%, and −20% (95% CI −34% to −4%). Each doubling of the jump goes with a 28% larger drop (95% CI −42% to −10%; p = 0.003, permutation p = 0.012). The same test with a fake March 2019 date finds no gradient (+6% per doubling, p = 0.73), so this isn't a difference between the sites that predates the change. Total crashes show the same direction (−11% per doubling, p = 0.015), but even the largest-jump third shows no decline (+0.3%).
+5. **Pedestrian and cyclist crashes:** −27.8% (95% CI −48.5% to +1.1%; permutation p = 0.06). Every version is negative (−17% to −28%), and the red-light comparison is significant (−25%, 95% CI −42% to −4%). But the main design fails its pre-trend test (p = 0.004) because of a spike at camera sites in late 2020, and with 784 crashes the quarterly numbers swing widely. This is suggestive, not conclusive.
+6. **Fatal or serious-injury crashes:** −6.5% (95% CI −39% to +43%). With 311 such crashes in the sample, there isn't enough data to say anything.
+
+Total crashes are the primary outcome. Everything else is secondary, and with about 30 tests in the project, a couple of p-values under 0.05 could appear by chance. I treat findings 4 and 5 as leads that deserve a follow-up, not as established effects.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="output/figures/violations-dark.png">
   <img alt="Monthly violations at the 51 study sites, 2018–2025. About 43,000 a month in 2019, a jump to 211,000 in March 2021 when $35 tickets at 6 mph over began, then a steady decline to about 73,000 a month in 2025." src="output/figures/violations.png">
+</picture>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="output/figures/dose_response-dark.png">
+  <img alt="Dose-response. For thirds of the 51 sites by violation jump, the change in crashes relative to comparison sites after March 2021, next to the same test with a fake March 2019 date. All crashes: +9%, +2%, +0.3%. Injury crashes: +3%, −16%, −20% (95% CI −34% to −4%). The placebo estimates show no gradient." src="output/figures/dose_response.png">
 </picture>
 
 ## Design
@@ -52,7 +61,7 @@ None of these were in the original plan. Each came from checking the data before
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="output/figures/robustness-dark.png">
-  <img alt="Forest plot of estimates and 95% confidence intervals for 19 specifications. All intervals include zero." src="output/figures/robustness.png">
+  <img alt="Forest plot of estimates and 95% confidence intervals for 23 specifications. Every total-crash interval includes zero. Injury and pedestrian-cyclist estimates are mostly negative; only the pedestrian-cyclist red-light comparison excludes zero." src="output/figures/robustness.png">
 </picture>
 
 | Block | Specification | Change | 95% CI | p | Sites (treated / comparison) | Crashes |
@@ -60,6 +69,7 @@ None of these were in the original plan. Each came from checking the data before
 | Main | **All crashes (main)** | **+3.3%** | −5.3% to +12.7% | 0.46 | 51 / 56 | 17,395 |
 | Main | **Injury crashes** | **−11.9%** | −27.0% to +6.3% | 0.19 | 50 / 56 | 2,582 |
 | Main | Fatal or serious-injury crashes | −6.5% | −38.8% to +42.9% | 0.76 | 44 / 49 | 311 |
+| Main | Pedestrian or cyclist crashes | −27.8% | −48.5% to +1.1% | 0.06 | 45 / 54 | 784 |
 | Main | Crashes coded as speeding | +0.6% | −46.0% to +87.4% | 0.99 | 25 / 31 | 96 |
 | Design | Radius 100 m | +1.6% | −11.8% to +17.1% | 0.82 | 51 / 56 | 6,235 |
 | Design | Radius 300 m | +2.2% | −5.6% to +10.5% | 0.59 | 51 / 56 | 34,541 |
@@ -73,12 +83,24 @@ None of these were in the original plan. Each came from checking the data before
 | Injury | Injury crashes, park-zone comparison only | −11.1% | −29.4% to +11.9% | 0.32 | 50 / 38 | 2,074 |
 | Injury | Injury crashes, red-light comparison | −11.3% | −23.2% to +2.5% | 0.10 | 50 / 106 | 9,628 |
 | Injury | Injury crashes, through 2024 | −12.5% | −24.8% to +1.9% | 0.09 | 50 / 56 | 3,504 |
+| Pedestrians and cyclists | Drop COVID months | −20.6% | −44.6% to +13.9% | 0.21 | 43 / 54 | 684 |
+| Pedestrians and cyclists | Red-light intersections as comparison | −25.2% | −41.9% to −3.8% | 0.02 | 45 / 106 | 2,504 |
+| Pedestrians and cyclists | Through 2024 | −16.7% | −34.2% to +5.4% | 0.13 | 47 / 55 | 1,070 |
 | School zones | School-zone sites vs. school-zone comparison | −8.0% | −17.1% to +2.0% | 0.11 | 41 / 17 | 9,682 |
 | School zones | School zones, injury crashes | −18.1% | −33.2% to +0.4% | 0.05 | 41 / 17 | 1,395 |
 | Placebo | Pretend change in Mar 2019 | −3.6% | −12.0% to +5.6% | 0.43 | 51 / 56 | 8,732 |
 | Placebo | Pretend change in Mar 2019, injury crashes | +8.9% | −13.6% to +37.3% | 0.47 | 48 / 56 | 1,230 |
 
-**Parallel trends.** A joint test that every pre-2021 quarter shows the same treated–comparison gap gives p = 0.11 for the main specification, 0.20 for injury crashes, and 0.81 with red-light intersections as the comparison. Without any model, average crashes per site per month went from 2.70 to 2.65 at camera sites (−1.7%) and from 2.98 to 2.84 at comparison sites (−4.6%), a ratio of +3.0%, matching the Poisson estimate.
+**Parallel trends.** A joint test that every pre-2021 quarter shows the same treated–comparison gap gives p = 0.11 for the main specification, 0.20 for injury crashes, and 0.81 with red-light intersections as the comparison. Pedestrian and cyclist crashes fail it in the main design (p = 0.004) but pass with the red-light comparison (p = 0.20).
+
+**Permutation test.** Clustered standard errors rely on large-sample math, so as a check I reshuffled which 51 of the 107 sites count as treated, 1,000 times, and refit the model each time. The p-value is the share of shuffles that land at least as far from zero as the real estimate. The results line up with the clustered p-values: 0.49 for all crashes, 0.19 for injury crashes, and 0.06 for pedestrian and cyclist crashes. Inside this loop the model is fit with a small Poisson fixed-effects solver written for the purpose, which matches the full regression to within 10⁻⁶ on the real data and is much faster.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="output/figures/permutation-dark.png">
+  <img alt="Permutation test. Histograms of estimates from 1,000 random reassignments of treated sites, with the real estimate marked: all crashes +3% (p = 0.49), injury crashes −12% (p = 0.19), pedestrian or cyclist crashes −28% (p = 0.06)." src="output/figures/permutation.png">
+</picture>
+
+**Raw averages.** Without any model, average crashes per site per month went from 2.70 to 2.65 at camera sites (−1.7%) and from 2.98 to 2.84 at comparison sites (−4.6%), a ratio of +3.0%, matching the Poisson estimate.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="output/figures/raw_trends-dark.png">
@@ -87,7 +109,9 @@ None of these were in the original plan. Each came from checking the data before
 
 ## Limitations
 
-- **Most crashes near a camera aren't speeding crashes.** The 1/8-mile buffer includes intersections where rear-ends, turns, and parking crashes dominate. A real effect on the crashes that 6–10 mph speeding causes could be diluted. Police rarely code speeding as a cause (96 crashes in the sample), so those crashes can't be isolated.
+- **Most crashes near a camera aren't speeding crashes.** The 1/8-mile buffer includes intersections where rear-ends, turns, and parking crashes dominate; citywide, 23% of all crashes in the data are collisions with parked cars. A real effect on the crashes that 6–10 mph speeding causes could be diluted, which may be why injury crashes show more than total crashes do. Police rarely code speeding as a cause (96 crashes in the sample), so those crashes can't be isolated.
+- **The violation jump isn't randomly assigned.** Sites where it was largest may differ in ways that also changed their injury trends after 2021, such as road redesigns or traffic mix. The placebo rules out a gradient that already existed, but not one that happened to start in 2021.
+- **Pedestrian and cyclist crashes are identified by each report's first collision.** The city's crash-people table would also catch crashes where a pedestrian or cyclist was hit later in the sequence.
 - **Too few severe crashes.** The design rules out large changes in total crashes, but not in fatal or serious-injury crashes.
 - **The comparison sites were chosen later.** If the city picked 2023+ locations because crashes there rose in 2021–22, comparison sites would look worse after 2021, which would bias the estimate toward finding a benefit. The red-light comparison, chosen long before, gives the same answer (−0.1%), but this can't be ruled out completely.
 - **Spillovers.** If the change slowed drivers across the whole city, comparison sites would benefit too, and the estimate would understate the effect. Comparison sites more than 1 km from any camera give the same result (+3.0%), which argues against local spillovers but not against citywide ones.
@@ -96,17 +120,18 @@ None of these were in the original plan. Each came from checking the data before
 
 ## How this fits with earlier work
 
-CDOT's own evaluations compare periods years apart around installation; one found fatal and serious-injury crashes near cameras rose 2% from 2012–13 to 2018–19, versus 21% citywide ([Streetsblog Chicago](https://chi.streetsblog.org/2022/01/06/bakery-fresh-new-cdot-study-reaffirms-speed-cameras-are-saving-lives)). A UIC study of 2015–2017 data found cameras reduced fatal and serious crashes by about 15% ([CBS Chicago](https://www.cbsnews.com/chicago/news/uic-study-speed-cameras-safety-tickets-relationship)). Both study whether *cameras* work, and both predate the 2021 change. A 2022 [Axios analysis](https://www.axios.com/local/chicago/2022/07/19/speed-camera-data-offers-mixed-picture) compared raw changes in fatal crashes near and away from cameras over a short window. This project isolates the threshold itself. The results don't conflict with cameras reducing crashes. They suggest that extending tickets to the 6–10 mph range didn't produce a further measurable drop in total crashes nearby.
+CDOT's own evaluations compare periods years apart around installation; one found fatal and serious-injury crashes near cameras rose 2% from 2012–13 to 2018–19, versus 21% citywide ([Streetsblog Chicago](https://chi.streetsblog.org/2022/01/06/bakery-fresh-new-cdot-study-reaffirms-speed-cameras-are-saving-lives)). A UIC study of 2015–2017 data found cameras reduced fatal and serious crashes by about 15% ([CBS Chicago](https://www.cbsnews.com/chicago/news/uic-study-speed-cameras-safety-tickets-relationship)). Both study whether *cameras* work, and both predate the 2021 change. A 2022 [Axios analysis](https://www.axios.com/local/chicago/2022/07/19/speed-camera-data-offers-mixed-picture) compared raw changes in fatal crashes near and away from cameras over a short window. This project isolates the threshold itself. The results don't conflict with cameras reducing crashes. They suggest that extending tickets to the 6–10 mph range didn't produce a further measurable drop in total crashes nearby, with hints of fewer injury crashes where it caught the most drivers.
 
 ## Next steps
 
+- **Confirm the injury gradient.** It's the most interesting result here and the one most at risk of being chance. A fresh test would fix the analysis in advance, before looking at outcomes. For example: do the 2025 cameras cut injury crashes most where they catch the most drivers?
 - **The 2025 expansion as its own experiment.** About 50 cameras went live in mid-to-late 2025 on a staggered schedule, which is a clean setup for a staggered difference-in-differences (Callaway–Sant'Anna) on the effect of *installing* a camera.
-- **Pedestrian and cyclist crashes,** using the city's crash-people table.
+- **Pedestrian and cyclist involvement** from the city's crash-people table, which records everyone involved in a crash.
 - **The mechanism.** A FOIA request for per-camera speed distributions would show whether speeds actually fell, and by how much.
 
 ## Reproduce
 
-Built with Python 3.14. The first run downloads about 880,000 crash records (about 130 MB, a few minutes), which are cached after that.
+Built with Python 3.14. The first run downloads about 880,000 crash records (about 130 MB, a few minutes), which are cached after that. The analysis itself then takes about two minutes, mostly for the permutation tests.
 
 ```powershell
 python -m venv .venv
@@ -121,7 +146,7 @@ src/config.py     every analytic choice in one place (dates, radii, distances, g
 src/download.py   step 1: pull data from the Chicago open data portal (cached)
 src/sites.py      step 2: camera universe incl. retired cameras, sites, study groups
 src/panel.py      step 3: crashes per site per month at three radii; violations per month
-src/estimate.py   step 4: Poisson DiD, event studies, every specification above
+src/estimate.py   step 4: Poisson DiD, event studies, dose-response, permutation tests
 src/figures.py    step 5: figures, light and dark
 data/processed/   derived site list, camera list, panel (small; committed)
 output/           result tables (CSV/JSON) and figures
@@ -131,3 +156,7 @@ output/           result tables (CSV/JSON) and figures
 
 - Data: [Traffic Crashes – Crashes](https://data.cityofchicago.org/d/85ca-t3if), [Speed Camera Locations](https://data.cityofchicago.org/d/4i42-qv3h), [Speed Camera Violations](https://data.cityofchicago.org/d/hhkd-xvj4), [Red Light Camera Locations](https://data.cityofchicago.org/d/thvf-6diy), City of Chicago Data Portal.
 - Policy timeline: [warnings from Jan 15, 2021](https://chi.streetsblog.org/2021/01/21/city-is-now-issuing-warnings-for-6-mph-speed-cam-violations-35-tickets-after-march-1); [tickets from Mar 1, 2021](https://cbsnews.com/chicago/news/city-to-begin-enforcing-new-lower-threshold-for-speed-camera-tickets-on-march-1-after-44-day-grace-period).
+
+## License
+
+The code is under the [MIT License](LICENSE). The data come from the City of Chicago Data Portal and remain subject to the City's terms of use.
